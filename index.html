@@ -6,14 +6,44 @@
     <title>Color Picker</title>
     <style>
         body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-family: Arial, sans-serif;
-            padding: 20px;
+            background-color: #f0f0f0;
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin: 0;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            max-width: 600px;
+            width: 90%;
+            margin: 40px auto;
+        }
+
+        .complementary-title {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #666;
+            text-align: center;
+            display: none;
+        }
+
+        .complementary-title.visible {
+            display: block;
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-align: center;
         }
         .color-info {
             text-align: center;
@@ -28,6 +58,7 @@
             display: flex;
             gap: 15px;
             margin-top: 20px;
+            justify-content: center;
         }
         .color-swatch {
             width: 80px;
@@ -57,10 +88,11 @@
             background: white;
             color: #333;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             transition: all 0.2s ease;
             font-weight: 500;
-            margin-bottom: 20px;
+            margin: 0 auto 20px;
+            display: block;
         }
         .color-button:hover {
             background: #fafafa;
@@ -87,16 +119,19 @@
     </style>
 </head>
 <body>
-    <h1>Color Picker</h1>
-    <input type="color" id="colorPicker">
-    <button class="color-button" onclick="colorPicker.click()">Pick a Color</button>
-    <div class="color-info">
-        <div class="input-group">
-            <label for="colorInput">Color:</label>
-            <input type="text" id="colorInput" class="color-input" placeholder="Enter color (hex, rgb, or name)">
+    <div class="container">
+        <h1>Color Picker</h1>
+        <input type="color" id="colorPicker">
+        <button class="color-button" onclick="colorPicker.click()">Pick a Color</button>
+        <div class="color-info">
+            <div class="input-group">
+                <label for="colorInput">Color:</label>
+                <input type="text" id="colorInput" class="color-input" placeholder="Enter color (hex, rgb, or name)">
+            </div>
         </div>
+        <p class="complementary-title">Here are some complementary colors:</p>
+        <div class="complementary-colors" id="complementaryColors"></div>
     </div>
-    <div class="complementary-colors" id="complementaryColors"></div>
 
     <script>
         const colorPicker = document.getElementById('colorPicker');
@@ -234,10 +269,25 @@
 
         function updateColor(r, g, b) {
             const hex = rgbToHex(r, g, b);
-            const textColor = shouldUseWhiteText(r, g, b) ? '#ffffff' : '#000000';
+            const container = document.querySelector('.container');
+            const colorInfo = document.querySelector('.color-info');
+            const complementaryTitle = document.querySelector('.complementary-title');
             
-            body.style.backgroundColor = hex;
-            body.style.color = textColor;
+            // Show the complementary title
+            complementaryTitle.classList.add('visible');
+            
+            // Update container background and text colors
+            container.style.backgroundColor = hex;
+            
+            // Calculate contrast for container text
+            const containerTextColor = shouldUseWhiteText(r, g, b) ? '#ffffff' : '#000000';
+            container.style.color = containerTextColor;
+            
+            // Update color info background and text
+            colorInfo.style.backgroundColor = shouldUseWhiteText(r, g, b) ? 
+                'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)';
+            
+            // Update input values
             colorInput.value = hex;
             colorPicker.value = hex;
 
